@@ -14,6 +14,49 @@ const TableHeader = (props) => {
     )
 }
 
+const TableBody = (props) => {
+    const { data, style } = props
+
+    return (
+        <tbody>
+            {data.map(item => (
+                <TableRow item={item} style={style} key={item.id} />
+            ))}
+        </tbody>
+    )
+}
+
+const TableRow = (props) => {
+    const { item, style } = props
+
+    return (
+        <tr>
+            <td style={style}>{item.id}</td>
+            <td style={style}>{item.name}</td>
+            <td style={style}>{item.price}</td>
+            <td style={style}>{item.quantity}</td>
+            <td style={style}>{item.price * item.quantity}</td>
+        </tr>
+    )
+}
+
+const TableFooter = props => {
+    const { data } = props
+
+    return (
+        <tfoot>
+            <tr>
+                <td>Suma do zapłaty za wszystkie produkty</td>
+                <td>
+                    {data.reduce((acc, curr) => {
+                        return acc + curr.price * curr.quantity
+                    }, 0)}
+                </td>
+            </tr>
+        </tfoot>
+    )
+}
+
 class Table extends React.Component {
     render() {
         const { data } = this.props;
@@ -22,38 +65,9 @@ class Table extends React.Component {
 
         return (
             <table style={style}>
-                {/* <thead>
-                    <tr>
-                        {Object.keys(data[0]).map(name => {
-                            return <th style={style} key={name}>{name}</th>
-                        })}
-                        <th style={style}>Kwota do zapłaty</th>
-                    </tr>
-                </thead> */}
                 <TableHeader style={style} data={data} />
-                <tbody>
-                    {data.map(item => {
-                        return (
-                            <tr key={item.id}>
-                                <td style={style}>{item.id}</td>
-                                <td style={style}>{item.name}</td>
-                                <td style={style}>{item.price}</td>
-                                <td style={style}>{item.quantity}</td>
-                                <td style={style}>{item.price * item.quantity}</td>
-                            </tr>
-                        )
-                    })}
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td>Suma do zapłaty za wszystkie produkty</td>
-                        <td>
-                            {data.reduce((acc, curr) => {
-                                return acc + curr.price * curr.quantity
-                            }, 0)}
-                        </td>
-                    </tr>
-                </tfoot>
+                <TableBody style={style} data={data} />
+                <TableFooter data={data} />
             </table>)
     }
 }
