@@ -15,9 +15,22 @@ class App extends React.Component {
     handleSubmit = e => {
         e.preventDefault();
         const inputRef = this.fileRef.current.inputRef.current;
-        console.log(inputRef.files[0])
+        // console.log(inputRef.files[0])
         const inputRefFile = inputRef.files[0];
-        if (!inputRefFile) return
+        if (!inputRefFile) {
+            this.setState(prevState => {
+                return {
+                    isError: true
+                }
+            })
+            return
+        } else {
+            this.setState(prevState => {
+                return {
+                    isError: false
+                }
+            })
+        }
 
 
 
@@ -31,10 +44,11 @@ class App extends React.Component {
                 fileReader.readAsText(file)
             })
         }
+        // console.log(readFile(inputRefFile));
 
-        async function createData() {
-            const content = await readFile(inputRefFile);
-            const { name, size } = inputRefFile;
+        async function createData(file) {
+            const content = await readFile(file);
+            const { name, size } = file;
             return {
                 id: uuidv4(),
                 name,
@@ -44,28 +58,22 @@ class App extends React.Component {
         }
 
         (async () => {
-            const newData = await createData()
+            const newData = await createData(inputRefFile)
             this.setState(prevState => {
                 return {
                     filesList: [...prevState.filesList, newData]
                 }
             })
         })()
-        // this.setState(prevState => {
-        //     const newData = createData()
-        //     return {
-        //         filesList: [...prevState.filesList, newData]
-        //     }
-        // })
     }
 
 
     render() {
-        const { filesList } = this.state;
+        const { filesList, isError } = this.state;
         return (
             <section>
                 <File ref={this.fileRef} submit={this.handleSubmit} />
-                <List data={filesList} />
+                <List data={filesList} isError={isError} />
             </section>
         )
     }
