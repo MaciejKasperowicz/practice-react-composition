@@ -1,8 +1,16 @@
 import React from 'react';
 
 class Textarea extends React.Component {
+    textAreaRef = React.createRef();
+
+
     render() {
-        return <textarea></textarea>
+        const { onChange } = this.props
+        return <textarea
+            ref={this.textAreaRef}
+            onChange={onChange}
+
+        ></textarea>
     }
 }
 
